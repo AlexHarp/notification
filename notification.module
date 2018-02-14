@@ -1,0 +1,68 @@
+<?php
+/**
+* @file
+* A description of what your module does.
+*/
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\user\Entity\User;
+
+
+/**
+ * Implements hook_entity_update().
+ */
+function notification_node_update(EntityInterface $entity){
+
+   if($entity->get('moderation_state')->getString() == 'awaiting_branch_head_approval'){
+
+       /** get all branch heads*/
+       $ids = \Drupal::entityQuery('user')
+           ->condition('status', 1)
+           ->condition('roles', 'branch_head')
+           ->execute();
+       $users = User::loadMultiple($ids);
+       kint($users);
+
+       $str = "";
+       foreach($users as &$user) {
+
+           $mailManager = \Drupal::service('plugin.manager.mail');
+           $module = ‘notification’;
+           $key = 'branch_head_notification';
+           $to = $user->get('mail')->getString();
+          /** $params['message'] = $entity->get('body')->value;           */
+           $params['title'] = $entity->gettitle();
+           $langcode = \Drupal::currentUser()->getPreferredLangcode();
+           $send = true;
+           $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
+           if ($result['result'] !== true) {
+               drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+           } else {
+               drupal_set_message(t('Your message has been sent.'));
+           }
+       }
+   }
+}
+
+    /** kint($entity);*/
+    /**kint($entity->node, 'field'); */
+    /**kint($entity); */
+    /**kint($entity->getfields());*/
+/**    file_put_contents("/var/www/html/sites/default/files/debug.txt", $entity->get('field_acknowledgments')->getString());
+    file_put_contents("/var/www/html/sites/default/files/debug1.txt", $entity->get('moderation_state')->getString());
+   */ /** file_put_contents("/var/www/html/sites/default/files/debug1.txt", $entity->getfields());*/
+    /**sleep(10);*/
+
+
+function notification_mail ($key, &$message, $params) {
+
+    kint($message);
+
+    switch ($key) {
+        case 'branch_head_notification':
+            // Set headers etc
+            $message['from'] = \Drupal::config('system.site')->get('mail');
+            $message['subject'] = t('THIS IS A TEST EMAIL CMI: @title requires review', array('@title' => $params['title']));
+            $message['body'][] = t('The product @title has been submitted for review. The product can be found here: http://cmi.ga.gov.au/@title', array('@title' => $params['title']));
+            break;
+    }
+}

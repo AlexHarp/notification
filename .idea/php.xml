@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PhpIncludePathManager">
+    <include_path>
+      <path value="$PROJECT_DIR$/../../core" />
+      <path value="$PROJECT_DIR$/../ds" />
+      <path value="$PROJECT_DIR$/../cer" />
+      <path value="$PROJECT_DIR$/../diff" />
+      <path value="$PROJECT_DIR$/../imce" />
+      <path value="$PROJECT_DIR$/../smtp" />
+      <path value="$PROJECT_DIR$/../devel" />
+      <path value="$PROJECT_DIR$/../rules" />
+      <path value="$PROJECT_DIR$/../token" />
+      <path value="$PROJECT_DIR$/../charts" />
+      <path value="$PROJECT_DIR$/../ctools" />
+      <path value="$PROJECT_DIR$/../iframe" />
+      <path value="$PROJECT_DIR$/../panels" />
+      <path value="$PROJECT_DIR$/../pdf_api" />
+      <path value="$PROJECT_DIR$/../pathauto" />
+      <path value="$PROJECT_DIR$/../printable" />
+      <path value="$PROJECT_DIR$/../contribute" />
+      <path value="$PROJECT_DIR$/../mailsystem" />
+      <path value="$PROJECT_DIR$/../masquerade" />
+      <path value="$PROJECT_DIR$/../menu_token" />
+      <path value="$PROJECT_DIR$/../nice_menus" />
+      <path value="$PROJECT_DIR$/../node_clone" />
+      <path value="$PROJECT_DIR$/../paragraphs" />
+      <path value="$PROJECT_DIR$/../tablefield" />
+      <path value="$PROJECT_DIR$/../typed_data" />
+      <path value="$PROJECT_DIR$/../customerror" />
+      <path value="$PROJECT_DIR$/../field_group" />
+      <path value="$PROJECT_DIR$/../subpathauto" />
+      <path value="$PROJECT_DIR$/../swiftmailer" />
+      <path value="$PROJECT_DIR$/../ecat_mark_up" />
+      <path value="$PROJECT_DIR$/../entity_print" />
+      <path value="$PROJECT_DIR$/../views_extras" />
+      <path value="$PROJECT_DIR$/../autosave_form" />
+      <path value="$PROJECT_DIR$/../contact_block" />
+      <path value="$PROJECT_DIR$/../simpleaddress" />
+      <path value="$PROJECT_DIR$/../field_mappings" />
+      <path value="$PROJECT_DIR$/../nocurrent_pass" />
+      <path value="$PROJECT_DIR$/../allowed_formats" />
+      <path value="$PROJECT_DIR$/../field_formatter" />
+      <path value="$PROJECT_DIR$/../taxonomy_delete" />
+      <path value="$PROJECT_DIR$/../google_analytics" />
+      <path value="$PROJECT_DIR$/../taxonomy_manager" />
+      <path value="$PROJECT_DIR$/../views_field_view" />
+      <path value="$PROJECT_DIR$/../user_default_page" />
+      <path value="$PROJECT_DIR$/../menu_admin_per_menu" />
+      <path value="$PROJECT_DIR$/../views_flipped_table" />
+      <path value="$PROJECT_DIR$/../json_entity_renderer" />
+      <path value="$PROJECT_DIR$/../node_title_help_text" />
+      <path value="$PROJECT_DIR$/../views_field_formatter" />
+      <path value="$PROJECT_DIR$/../views_url_path_arguments" />
+      <path value="$PROJECT_DIR$/../entity_reference_revisions" />
+      <path value="$PROJECT_DIR$/../entity_reference_unpublished" />
+      <path value="$PROJECT_DIR$/../../vendor" />
+    </include_path>
+  </component>
+</project>
