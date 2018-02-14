@@ -20,13 +20,13 @@ function notification_node_update(EntityInterface $entity){
            ->condition('roles', 'branch_head')
            ->execute();
        $users = User::loadMultiple($ids);
-       kint($users);
+       /**kint($users); */
 
        $str = "";
        foreach($users as &$user) {
 
            $mailManager = \Drupal::service('plugin.manager.mail');
-           $module = ‘notification’;
+           $module = "notification";
            $key = 'branch_head_notification';
            $to = $user->get('mail')->getString();
           /** $params['message'] = $entity->get('body')->value;           */
@@ -55,14 +55,14 @@ function notification_node_update(EntityInterface $entity){
 
 function notification_mail ($key, &$message, $params) {
 
-    kint($message);
+    /**kint($message);*/
 
     switch ($key) {
         case 'branch_head_notification':
             // Set headers etc
             $message['from'] = \Drupal::config('system.site')->get('mail');
             $message['subject'] = t('THIS IS A TEST EMAIL CMI: @title requires review', array('@title' => $params['title']));
-            $message['body'][] = t('The product @title has been submitted for review. The product can be found here: http://cmi.ga.gov.au/@title', array('@title' => $params['title']));
+            $message['body'] = t('The product @title has been submitted for review. The product can be found here: http://cmi.ga.gov.au/@title', array('@title' => $params['title']));
             break;
     }
 }
