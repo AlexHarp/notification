@@ -29,7 +29,7 @@ function notification_node_update(EntityInterface $entity){
            $module = "notification";
            $key = 'branch_head_notification';
            $to = $user->get('mail')->getString();
-          /** $params['message'] = $entity->get('body')->value;           */
+           $params['message'] = "params message test";/* $entity->get('body')->value;*/           
            $params['title'] = $entity->gettitle();
            $langcode = \Drupal::currentUser()->getPreferredLangcode();
            $send = true;
@@ -62,7 +62,7 @@ function notification_mail ($key, &$message, $params) {
             // Set headers etc
             $message['from'] = \Drupal::config('system.site')->get('mail');
             $message['subject'] = t('THIS IS A TEST EMAIL CMI: @title requires review', array('@title' => $params['title']));
-            $message['body'] = t('The product @title has been submitted for review. The product can be found here: http://cmi.ga.gov.au/@title', array('@title' => $params['title']));
+            $message['body'][] = t('The product @title has been submitted for review. The product can be found here: http://cmi.ga.gov.au/@title', array('@title' => $params['title']));
             break;
     }
 }
