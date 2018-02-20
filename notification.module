@@ -12,17 +12,53 @@ use Drupal\user\Entity\User;
  */
 function notification_node_update(EntityInterface $entity){
 
-   if($entity->get('moderation_state')->getString() == 'awaiting_branch_head_approval'){
+    $result = null;
+
+   switch($entity->get('moderation_state')->getString()) {
+
+       case 'awaiting_branch_head_approval':
+           $mailManager = \Drupal::service('plugin.manager.mail');
+           $module = "notification";
+           $key = 'branch_head_notification';
+           $to = $entity->get('field_please_select_your_branch_')->value;
+           kint($to, "to");
+           $params['message'] = "params message test";/* $entity->get('body')->value;*/
+           $params['title'] = $entity->gettitle();
+           $params['user'] = $entity->getRevisionUser();
+           kint($params['user'], "user");
+           $params['url'] = $entity->toUrl();
+           kint($params['url'], "url");
+           $langcode = \Drupal::currentUser()->getPreferredLangcode();
+           $send = true;
+           $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
+           sleep(30);
+           break;
+       case 'awaiting_project_lead_approval':
+           break;
+
+       case 'published':
+           break;
+   }
+
+    if ($result['result'] !== true) {
+        drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+    } else {
+        drupal_set_message(t('Your message has been sent.'));
+    }
+
+
+    //}
+  /* if($entity->get('moderation_state')->getString() == 'awaiting_branch_head_approval'){
 
        /** get all branch heads*/
-       $ids = \Drupal::entityQuery('user')
+      /* $ids = \Drupal::entityQuery('user')
            ->condition('status', 1)
            ->condition('roles', 'branch_head')
            ->execute();
-       $users = User::loadMultiple($ids);
+       $users = User::loadMultiple($ids);*/
        /**kint($users); */
 
-       $str = "";
+       /*$str = "";
        foreach($users as &$user) {
 
            $mailManager = \Drupal::service('plugin.manager.mail');
@@ -30,7 +66,7 @@ function notification_node_update(EntityInterface $entity){
            $key = 'branch_head_notification';
            $to = $user->get('mail')->getString();
            $params['message'] = "params message test";/* $entity->get('body')->value;*/           
-           $params['title'] = $entity->gettitle();
+          /* $params['title'] = $entity->gettitle();
            $langcode = \Drupal::currentUser()->getPreferredLangcode();
            $send = true;
            $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
@@ -40,7 +76,7 @@ function notification_node_update(EntityInterface $entity){
                drupal_set_message(t('Your message has been sent.'));
            }
        }
-   }
+   }*/
 }
 
     /** kint($entity);*/

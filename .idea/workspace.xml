@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="7f211fc7-70c2-4c82-8665-88e79fa7379c" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/notification.info.yml" afterPath="$PROJECT_DIR$/notification.info.yml" />
       <change beforePath="$PROJECT_DIR$/notification.module" afterPath="$PROJECT_DIR$/notification.module" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -21,8 +20,8 @@
       <file leaf-file-name="notification.module" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/notification.module">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="568">
-              <caret line="68" column="0" lean-forward="true" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
+            <state relative-caret-position="492">
+              <caret line="37" column="0" lean-forward="true" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
               <folding>
                 <element signature="e#63#102#0#PHP" expanded="true" />
               </folding>
@@ -148,6 +147,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -160,7 +160,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -196,11 +195,15 @@
       <workItem from="1518438626804" duration="22988000" />
       <workItem from="1518602888819" duration="542000" />
       <workItem from="1518605003788" duration="4003000" />
+      <workItem from="1519056115523" duration="493000" />
+      <workItem from="1519057494942" duration="75000" />
+      <workItem from="1519117045394" duration="1251000" />
+      <workItem from="1519119854034" duration="6183000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="29638000" />
+    <option name="totallyTimeSpent" value="37640000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="67" y="25" width="1920" height="1202" extended-state="6" />
@@ -237,6 +240,110 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/notification.module">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#63#102#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../core/core.api.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38268">
+          <caret line="2126" column="9" lean-forward="false" selection-start-line="2126" selection-start-column="9" selection-end-line="2126" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/notification.info.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" column="20" lean-forward="false" selection-start-line="4" selection-start-column="20" selection-end-line="4" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/notification.module">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#63#102#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../core/core.api.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38268">
+          <caret line="2126" column="9" lean-forward="false" selection-start-line="2126" selection-start-column="9" selection-end-line="2126" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/notification.info.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" column="20" lean-forward="false" selection-start-line="4" selection-start-column="20" selection-end-line="4" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/notification.module">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#63#102#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../core/core.api.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38268">
+          <caret line="2126" column="9" lean-forward="false" selection-start-line="2126" selection-start-column="9" selection-end-line="2126" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/notification.info.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" column="20" lean-forward="false" selection-start-line="4" selection-start-column="20" selection-end-line="4" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/notification.module">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#63#102#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../core/core.api.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38268">
+          <caret line="2126" column="9" lean-forward="false" selection-start-line="2126" selection-start-column="9" selection-end-line="2126" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/notification.info.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" column="20" lean-forward="false" selection-start-line="4" selection-start-column="20" selection-end-line="4" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/notification.module">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -325,8 +432,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/notification.module">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="568">
-          <caret line="68" column="0" lean-forward="true" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
+        <state relative-caret-position="492">
+          <caret line="37" column="0" lean-forward="true" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
           <folding>
             <element signature="e#63#102#0#PHP" expanded="true" />
           </folding>
