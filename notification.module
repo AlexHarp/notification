@@ -5,14 +5,13 @@
 */
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\user\Entity\User;
-
-
+//use Drupal\Core\Entity;
 /**
  * Implements hook_entity_update().
  */
 function notification_node_update(EntityInterface $entity){
 
-    $result = null;
+   $result = null;
 
    switch($entity->get('moderation_state')->getString()) {
 
@@ -20,23 +19,48 @@ function notification_node_update(EntityInterface $entity){
            $mailManager = \Drupal::service('plugin.manager.mail');
            $module = "notification";
            $key = 'branch_head_notification';
-           $to = $entity->get('field_please_select_your_branch_')->value;
-           kint($to, "to");
+           $entUser = $entity->get('field_please_select_your_branch_')->getvalue();
+	   $entUser = \Drupal::entityTypeManager()->getStorage('user')->load($entUser[0]['target_id']);
+           $to = $entUser->getEmail();
            $params['message'] = "params message test";/* $entity->get('body')->value;*/
            $params['title'] = $entity->gettitle();
-           $params['user'] = $entity->getRevisionUser();
-           kint($params['user'], "user");
-           $params['url'] = $entity->toUrl();
-           kint($params['url'], "url");
+           $params['user'] = $entity->getRevisionUser()->getEmail();
+           $params['url'] = $entity->toUrl()->toString();
            $langcode = \Drupal::currentUser()->getPreferredLangcode();
            $send = true;
            $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
-           sleep(30);
            break;
+
        case 'awaiting_project_lead_approval':
+           $mailManager = \Drupal::service('plugin.manager.mail');
+           $module = "notification";
+           $key = 'project_lead__notification';
+           $entUser = $entity->get('field_project_lead_')->getvalue();
+	   $entUser = \Drupal::entityTypeManager()->getStorage('user')->load($entUser[0]['target_id']);
+           $to = $entUser->getEmail();
+           $params['message'] = "params message test";/* $entity->get('body')->value;*/
+           $params['title'] = $entity->gettitle();
+           $params['user'] = $entity->getRevisionUser()->getEmail();
+           $params['url'] = $entity->toUrl()->toString();
+           $langcode = \Drupal::currentUser()->getPreferredLangcode();
+           $send = true;
+           $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
            break;
 
        case 'published':
+           $mailManager = \Drupal::service('plugin.manager.mail');
+           $module = "notification";
+           $key = 'published_notification';
+           $to = 'alexis.harper@ga.gov.au';
+           $params['message'] = "params message test";/* $entity->get('body')->value;*/
+           $params['title'] = $entity->gettitle();
+           $params['user'] = $entity->getRevisionUser()->getEmail();
+           $params['url'] = $entity->toUrl()->toString();
+           $langcode = \Drupal::currentUser()->getPreferredLangcode();
+           $send = true;
+           $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
+           $to = 'Katherine.Fontaine@ga.gov.au';
+           $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
            break;
    }
 
@@ -45,60 +69,28 @@ function notification_node_update(EntityInterface $entity){
     } else {
         drupal_set_message(t('Your message has been sent.'));
     }
-
-
-    //}
-  /* if($entity->get('moderation_state')->getString() == 'awaiting_branch_head_approval'){
-
-       /** get all branch heads*/
-      /* $ids = \Drupal::entityQuery('user')
-           ->condition('status', 1)
-           ->condition('roles', 'branch_head')
-           ->execute();
-       $users = User::loadMultiple($ids);*/
-       /**kint($users); */
-
-       /*$str = "";
-       foreach($users as &$user) {
-
-           $mailManager = \Drupal::service('plugin.manager.mail');
-           $module = "notification";
-           $key = 'branch_head_notification';
-           $to = $user->get('mail')->getString();
-           $params['message'] = "params message test";/* $entity->get('body')->value;*/           
-          /* $params['title'] = $entity->gettitle();
-           $langcode = \Drupal::currentUser()->getPreferredLangcode();
-           $send = true;
-           $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
-           if ($result['result'] !== true) {
-               drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
-           } else {
-               drupal_set_message(t('Your message has been sent.'));
-           }
-       }
-   }*/
 }
 
-    /** kint($entity);*/
-    /**kint($entity->node, 'field'); */
-    /**kint($entity); */
-    /**kint($entity->getfields());*/
-/**    file_put_contents("/var/www/html/sites/default/files/debug.txt", $entity->get('field_acknowledgments')->getString());
-    file_put_contents("/var/www/html/sites/default/files/debug1.txt", $entity->get('moderation_state')->getString());
-   */ /** file_put_contents("/var/www/html/sites/default/files/debug1.txt", $entity->getfields());*/
-    /**sleep(10);*/
-
-
 function notification_mail ($key, &$message, $params) {
-
-    /**kint($message);*/
 
     switch ($key) {
         case 'branch_head_notification':
             // Set headers etc
             $message['from'] = \Drupal::config('system.site')->get('mail');
-            $message['subject'] = t('THIS IS A TEST EMAIL CMI: @title requires review', array('@title' => $params['title']));
-            $message['body'][] = t('The product @title has been submitted for review. The product can be found here: http://cmi.ga.gov.au/@title', array('@title' => $params['title']));
+            $message['subject'] = t('THIS IS A TEST EMAIL CMI: @title requires branch head review', array('@title' => $params['title']));
+            $message['body'][] = t('The product @title has been submitted by @user for review. The product can be found here: http://cmi.ga.gov.au@url', array('@title' => $params['title'], '@url' => $params['url'], '@user' => $params['user']));            
+            break;
+
+       case 'project_lead_notification':
+            $message['from'] = \Drupal::config('system.site')->get('mail');
+            $message['subject'] = t('THIS IS A TEST EMAIL CMI: @title requires project lead review', array('@title' => $params['title']));
+            $message['body'][] = t('The product @title has been submitted by @user for review. The product can be found here: http://cmi.ga.gov.au@url', array('@title' => $params['title'], '@url' => $params['url'], '@user' => $params['user']));            
+            break;
+
+       case 'published_notification':
+            $message['from'] = \Drupal::config('system.site')->get('mail');
+            $message['subject'] = t('THIS IS A TEST EMAIL CMI: @title has been published', array('@title' => $params['title']));
+            $message['body'][] = t('The product @title has been published by @user. The product can be found here: http://cmi.ga.gov.au@url', array('@title' => $params['title'], '@url' => $params['url'], '@user' => $params['user']));            
             break;
     }
 }
