@@ -26,6 +26,7 @@ function notification_node_update(EntityInterface $entity){
            $params['title'] = $entity->gettitle();
            $params['user'] = $entity->getRevisionUser()->getEmail();
            $params['url'] = $entity->toUrl()->toString();
+	   $params['to'] = $ro;
            $langcode = \Drupal::currentUser()->getPreferredLangcode();
            $send = true;
            $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
@@ -34,7 +35,7 @@ function notification_node_update(EntityInterface $entity){
        case 'awaiting_project_lead_approval':
            $mailManager = \Drupal::service('plugin.manager.mail');
            $module = "notification";
-           $key = 'project_lead__notification';
+           $key = 'project_lead_notification';
            $entUser = $entity->get('field_project_lead_')->getvalue();
 	   $entUser = \Drupal::entityTypeManager()->getStorage('user')->load($entUser[0]['target_id']);
            $to = $entUser->getEmail();
@@ -42,6 +43,7 @@ function notification_node_update(EntityInterface $entity){
            $params['title'] = $entity->gettitle();
            $params['user'] = $entity->getRevisionUser()->getEmail();
            $params['url'] = $entity->toUrl()->toString();
+	   $params['to'] = $to;
            $langcode = \Drupal::currentUser()->getPreferredLangcode();
            $send = true;
            $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
@@ -77,14 +79,42 @@ function notification_mail ($key, &$message, $params) {
         case 'branch_head_notification':
             // Set headers etc
             $message['from'] = \Drupal::config('system.site')->get('mail');
-            $message['subject'] = t('THIS IS A TEST EMAIL CMI: @title requires branch head review', array('@title' => $params['title']));
-            $message['body'][] = t('The product @title has been submitted by @user for review. The product can be found here: http://cmi.ga.gov.au@url', array('@title' => $params['title'], '@url' => $params['url'], '@user' => $params['user']));            
+            $message['subject'] = t('CMI: @title awaiting approval (Branch Head)', array('@title' => $params['title']));
+            $message['body'][] = 
+t('Hello @to,
+
+The product @title is ready for Branch Head approval, requested by @user. Please click the link below to log on and view the metadata record for @title.
+http://cmi.ga.gov.au@url
+
+This was approved by Project Leader @user on [date] and includes the following comments:[log message from project lead – or blank]
+
+Once you have reviewed the content, and if you approve, please follow these steps:
+    1. Scroll to the bottom of the page
+    2. Include any relevant approval comments in the ‘Log Message’ box.
+    3. Change the ‘moderation state’ to ‘Approved: Publication & Delivery Preparation’ (drop down list).
+    4. Click Apply.
+
+Regards,
+CMI', array('@title' => $params['title'], '@url' => $params['url'], '@user' => $params['user'], '@to' => $params['to']));            
             break;
 
        case 'project_lead_notification':
             $message['from'] = \Drupal::config('system.site')->get('mail');
-            $message['subject'] = t('THIS IS A TEST EMAIL CMI: @title requires project lead review', array('@title' => $params['title']));
-            $message['body'][] = t('The product @title has been submitted by @user for review. The product can be found here: http://cmi.ga.gov.au@url', array('@title' => $params['title'], '@url' => $params['url'], '@user' => $params['user']));            
+            $message['subject'] = t('CMI: @title  awaiting approval (Project Lead)', array('@title' => $params['title']));
+            $message['body'][] =
+t('Hello @to,
+
+The product @title is ready for Project Lead approval, requested by @user. Please click the link below to log on and view the metadata record for @title.
+http://cmi.ga.gov.au@url
+
+Once you have reviewed the content, and if you approve, please follow these steps:
+    1. Scroll to the bottom of the page
+    2. Include any relevant approval comments in the ‘Log Message’ box.
+    3. Change the ‘moderation state’ to ‘Request Branch Head Approval’ (drop down list).
+    4. Click Apply.
+
+Regards,
+CMI', array('@title' => $params['title'], '@url' => $params['url'], '@user' => $params['user'], '@to' => $params['to']));            
             break;
 
        case 'published_notification':
