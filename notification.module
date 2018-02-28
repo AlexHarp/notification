@@ -12,6 +12,8 @@ use Drupal\user\Entity\User;
 function notification_node_update(EntityInterface $entity){
 
    $result = null;
+   $sent = false;
+   $cmiEmail = 'alexis.harper@ga.gov.au';
 
    switch($entity->get('moderation_state')->getString()) {
 
@@ -25,14 +27,18 @@ function notification_node_update(EntityInterface $entity){
            $params['message'] = "params message test";/* $entity->get('body')->value;*/
            $params['title'] = $entity->gettitle();
            $params['user'] = $entity->getRevisionUser()->getEmail();
+           $params['revdate'] = gmdate("Y-m-d H:i:s", $entity->getRevisionCreationTime());
+	   $params['revlog'] = $entity->getRevisionLogMessage();
            $params['url'] = $entity->toUrl()->toString();
-	   $params['to'] = $ro;
+	   $params['to'] = $to;
            $langcode = \Drupal::currentUser()->getPreferredLangcode();
            $send = true;
            $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
+	   $sent = true;
            break;
 
        case 'awaiting_project_lead_approval':
+kint($entity);
            $mailManager = \Drupal::service('plugin.manager.mail');
            $module = "notification";
            $key = 'project_lead_notification';
@@ -47,6 +53,7 @@ function notification_node_update(EntityInterface $entity){
            $langcode = \Drupal::currentUser()->getPreferredLangcode();
            $send = true;
            $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
+	   $sent = true;
            break;
 
        case 'published':
@@ -63,14 +70,16 @@ function notification_node_update(EntityInterface $entity){
            $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
            $to = 'Katherine.Fontaine@ga.gov.au';
            $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
+	   $sent = true;
            break;
    }
-
-    if ($result['result'] !== true) {
-        drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
-    } else {
-        drupal_set_message(t('Your message has been sent.'));
-    }
+      if($sent){
+	    if ($result['result'] !== true) {
+		drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+	    } else {
+		drupal_set_message(t('Your message has been sent.'));
+	    }
+      }
 }
 
 function notification_mail ($key, &$message, $params) {
@@ -86,7 +95,9 @@ t('Hello @to,
 The product @title is ready for Branch Head approval, requested by @user. Please click the link below to log on and view the metadata record for @title.
 http://cmi.ga.gov.au@url
 
-This was approved by Project Leader @user on [date] and includes the following comments:[log message from project lead – or blank]
+This was approved by Project Leader @user on @revdate  and includes the following comments:
+
+@revlog
 
 Once you have reviewed the content, and if you approve, please follow these steps:
     1. Scroll to the bottom of the page
@@ -95,7 +106,7 @@ Once you have reviewed the content, and if you approve, please follow these step
     4. Click Apply.
 
 Regards,
-CMI', array('@title' => $params['title'], '@url' => $params['url'], '@user' => $params['user'], '@to' => $params['to']));            
+CMI', array('@title' => $params['title'], '@url' => $params['url'], '@user' => $params['user'], '@to' => $params['to'], '@revdate' => $params['revdate'], '@revlog' => $paramd['revlog']));            
             break;
 
        case 'project_lead_notification':
