@@ -13,7 +13,7 @@ function notification_node_update(EntityInterface $entity){
 
    $result = null;
    $sent = false;
-   $cmiEmail = 'alexis.harper@ga.gov.au';
+   $cmiEmail = 'cmi@ga.gov.au';
 
    switch($entity->get('moderation_state')->getString()) {
 
@@ -24,6 +24,7 @@ function notification_node_update(EntityInterface $entity){
            $key = 'branch_head_notification';
            $entUser = $entity->get('field_please_select_your_branch_')->getvalue();
 	   $entUser = \Drupal::entityTypeManager()->getStorage('user')->load($entUser[0]['target_id']);
+//must catch nulls 
            $to = $entUser->getEmail();
            $params['message'] = "params message test";/* $entity->get('body')->value;*/
            $params['title'] = $entity->gettitle();
@@ -34,14 +35,16 @@ function notification_node_update(EntityInterface $entity){
 	   $params['revlog'] = $entity->getRevisionLogMessage();
            $params['url'] = $entity->toUrl()->toString();
 	   $params['to'] = $to;
+	   $to .= ', '.$cmiEmail;
            $langcode = \Drupal::currentUser()->getPreferredLangcode();
-           $send = true;
+	   $send = true;
            $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
 
 	   //send reciept to cmi
            $mailManager = \Drupal::service('plugin.manager.mail');
            $module = "notification";
            $key = 'project_lead_receipt';
+	   $to = $cmiEmail;
            $params['message'] = "params message test";/* $entity->get('body')->value;*/
            $params['title'] = $entity->gettitle();
            $params['simpletitle'] = $entity->get('field_simple_title')->getvalue();
@@ -55,6 +58,7 @@ function notification_node_update(EntityInterface $entity){
 	   $entUser = \Drupal::entityTypeManager()->getStorage('user')->load($entUser[0]['target_id']);
            $params['branchhead'] = $entUser->getEmail();
            $langcode = \Drupal::currentUser()->getPreferredLangcode();
+	   $send = true;
            $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
 	   $sent = true;
            break;
@@ -65,6 +69,7 @@ function notification_node_update(EntityInterface $entity){
            $key = 'project_lead_notification';
            $entUser = $entity->get('field_project_lead_')->getvalue();
 	   $entUser = \Drupal::entityTypeManager()->getStorage('user')->load($entUser[0]['target_id']);
+//must catch nulls 
            $to = $entUser->getEmail();
            $params['message'] = "params message test";/* $entity->get('body')->value;*/
            $params['title'] = $entity->gettitle();
@@ -73,34 +78,31 @@ function notification_node_update(EntityInterface $entity){
            $params['user'] = $entity->getRevisionUser()->getEmail();
            $params['url'] = $entity->toUrl()->toString();
 	   $params['to'] = $to;
+	   $to .= ', '.$cmiEmail;
            $langcode = \Drupal::currentUser()->getPreferredLangcode();
            $send = true;
            $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
 	   $sent = true;
            break;
 
-      /*case 'publishing':
-	   $mailManager = \Drupal::service('plugin.manager.mail');
+       case 'publishing':
+	  /* $mailManager = \Drupal::service('plugin.manager.mail');
            $module = "notification";
-           $key = 'project_lead_notification';
-           $entUser = $entity->get('field_project_lead_')->getvalue();
-	   $entUser = \Drupal::entityTypeManager()->getStorage('user')->load($entUser[0]['target_id']);
-           $to = $entUser->getEmail();
+           $key = 'cmi_notification';
            $params['message'] = "params message test";
            $params['title'] = $entity->gettitle();
            $params['simpletitle'] = $entity->get('field_simple_title')->getvalue();
 	   $params['simpletitle'] = $params['simpletitle'][0]['value'];
            $params['user'] = $entity->getRevisionUser()->getEmail();
            $params['url'] = $entity->toUrl()->toString();
-	   $params['to'] = $to;
+	  // $params['to'] = ;
            $langcode = \Drupal::currentUser()->getPreferredLangcode();
-           $send = true;
            $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
-	   $sent = true;
-
+*/
 	   $mailManager = \Drupal::service('plugin.manager.mail');
            $module = "notification";
-           $key = 'project_lead_receipt';
+           $key = 'branch_head_receipt';
+	   $to = $cmiEmail;
            $params['message'] = "params message test";
            $params['title'] = $entity->gettitle();
            $params['simpletitle'] = $entity->get('field_simple_title')->getvalue();
@@ -110,29 +112,26 @@ function notification_node_update(EntityInterface $entity){
 	   $params['revlog'] = $entity->getRevisionLogMessage();
            $params['url'] = $entity->toUrl()->toString();
 	   $params['to'] = $cmiEmail;
-           $entUser = $entity->get('field_please_select_your_branch_')->getvalue();
-	   $entUser = \Drupal::entityTypeManager()->getStorage('user')->load($entUser[0]['target_id']);
-           $params['branchhead'] = $entUser->getEmail();
            $langcode = \Drupal::currentUser()->getPreferredLangcode();
+	   $send = true;
            $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
 	   $sent = true;
            break;
 
-*/
-
-      case 'published':
+      case 'awaiting_publication':
            $mailManager = \Drupal::service('plugin.manager.mail');
            $module = "notification";
-           $key = 'published_notification';
+           $key = 'eCat_notification';
            $to = 'alexis.harper@ga.gov.au';
            $params['message'] = "params message test";/* $entity->get('body')->value;*/
            $params['title'] = $entity->gettitle();
            $params['user'] = $entity->getRevisionUser()->getEmail();
            $params['url'] = $entity->toUrl()->toString();
+           $params['simpletitle'] = $entity->get('field_simple_title')->getvalue();
+	   $params['simpletitle'] = $params['simpletitle'][0]['value'];
            $langcode = \Drupal::currentUser()->getPreferredLangcode();
-           $send = true;
-           $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
-           $to = 'Katherine.Fontaine@ga.gov.au';
+           $to = $cmiEmail;
+	   $send = true;
            $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
 	   $sent = true;
            break;
@@ -206,10 +205,29 @@ The Project Lead has left the following comments :
 The product can be found here: http://cmi.ga.gov.au@url', array('@title' => $params['title'], '@url' => $params['url'], '@user' => $params['user'], '@revdate' => $params['revdate'], '@revlog' => $params['revlog'], '@branchhead' => $params['branchhead'], '@simpletitle' => $params['simpletitle'])); 
 	    break;
 
-       case 'published_notification':
+      case 'branch_head_receipt':
             $message['from'] = \Drupal::config('system.site')->get('mail');
-            $message['subject'] = t('THIS IS A TEST EMAIL CMI: @title has been published', array('@title' => $params['title']));
-            $message['body'][] = t('The product @title has been published by @user. The product can be found here: http://cmi.ga.gov.au@url', array('@title' => $params['title'], '@url' => $params['url'], '@user' => $params['user']));            
+            $message['subject'] = t('Receipt - @title - Branch Head approval @revdate', array('@title' => $params['title'], '@revdate' => $params['revdate']));
+            $message['body'][] = t('The product @title (@simpletitle) has been approved by the Branch Head @user at @revdate and has been sent to the CMI team.
+
+The Branch Head has left the following comments :
+
+@revlog
+
+The product can be found here: http://cmi.ga.gov.au@url', array('@title' => $params['title'], '@url' => $params['url'], '@user' => $params['user'], '@revdate' => $params['revdate'], '@revlog' => $params['revlog'], '@branchhead' => $params['branchhead'], '@simpletitle' => $params['simpletitle'])); 
+	    break;
+
+      case 'eCat_notification':
+            $message['from'] = \Drupal::config('system.site')->get('mail');
+            $message['subject'] = t('CMI: @title eCat submission', array('@title' => $params['title']));
+            $message['body'][] = t('The product @title (@simpletitle) is ready for eCat submission and publication.
+
+The XML metadata file for ecat is located here: http://cmi.ga.gov.au/ecat@url
+
+The Project management plan is located here: http://cmi.ga.gov.au/pmp@url
+
+Regards,
+CMI', array('@title' => $params['title'], '@url' => $params['url'], '@user' => $params['user'], '@simpletitle' => $params['simpletitle'] ));            
             break;
     }
-	}
+}
