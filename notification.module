@@ -129,6 +129,7 @@ function notification_node_update(EntityInterface $entity){
            $params['url'] = $entity->toUrl()->toString();
            $params['simpletitle'] = $entity->get('field_simple_title')->getvalue();
 	   $params['simpletitle'] = $params['simpletitle'][0]['value'];
+	   $params['hprmref'] = $entity->get('field_hprm_references')->getvalue();
            $langcode = \Drupal::currentUser()->getPreferredLangcode();
            $to = $cmiEmail;
 	   $send = true;
@@ -155,7 +156,7 @@ function notification_mail ($key, &$message, $params) {
             $message['body'][] = 
 t('Hello @to,
 
-The product @title (@simpletitle) is ready for Branch Head approval, requested by @user. Please click the link below to log on and view the metadata record for @title.
+The product @title (@simpletitle) is ready for Branch Head approval. Please click the link below to log on and view the metadata record for @title.
 
 http://cmi.ga.gov.au@url
 
@@ -196,13 +197,13 @@ CMI', array('@title' => $params['title'], '@url' => $params['url'], '@user' => $
        case 'project_lead_receipt':
             $message['from'] = \Drupal::config('system.site')->get('mail');
             $message['subject'] = t('Receipt - @title - Project lead approval @revdate', array('@title' => $params['title'], '@revdate' => $params['revdate']));
-            $message['body'][] = t('The product @title (@simpletitle) has been approved by the Project Lead @user at @revdate and has been sent to the Branch Head @branchhead.
+            $message['body'][] = t('The product @title (@simpletitle) has been approved by the Project Lead @user at @revdate and has been sent to the Branch Head @branchhead for approval.
 
 The Project Lead has left the following comments :
 
 @revlog
 
-The product can be found here: http://cmi.ga.gov.au@url', array('@title' => $params['title'], '@url' => $params['url'], '@user' => $params['user'], '@revdate' => $params['revdate'], '@revlog' => $params['revlog'], '@branchhead' => $params['branchhead'], '@simpletitle' => $params['simpletitle'])); 
+The product meta data can be found here: http://cmi.ga.gov.au@url', array('@title' => $params['title'], '@url' => $params['url'], '@user' => $params['user'], '@revdate' => $params['revdate'], '@revlog' => $params['revlog'], '@branchhead' => $params['branchhead'], '@simpletitle' => $params['simpletitle'])); 
 	    break;
 
       case 'branch_head_receipt':
@@ -214,7 +215,9 @@ The Branch Head has left the following comments :
 
 @revlog
 
-The product can be found here: http://cmi.ga.gov.au@url', array('@title' => $params['title'], '@url' => $params['url'], '@user' => $params['user'], '@revdate' => $params['revdate'], '@revlog' => $params['revlog'], '@branchhead' => $params['branchhead'], '@simpletitle' => $params['simpletitle'])); 
+The product can be found here: http://cmi.ga.gov.au@url
+
+Please save this email to trim', array('@title' => $params['title'], '@url' => $params['url'], '@user' => $params['user'], '@revdate' => $params['revdate'], '@revlog' => $params['revlog'], '@branchhead' => $params['branchhead'], '@simpletitle' => $params['simpletitle'])); 
 	    break;
 
       case 'eCat_notification':
@@ -224,10 +227,10 @@ The product can be found here: http://cmi.ga.gov.au@url', array('@title' => $par
 
 The XML metadata file for ecat is located here: http://cmi.ga.gov.au/ecat@url
 
-The Project management plan is located here: http://cmi.ga.gov.au/pmp@url
+The Project management plan is located at HPRM reference @hprmref
 
 Regards,
-CMI', array('@title' => $params['title'], '@url' => $params['url'], '@user' => $params['user'], '@simpletitle' => $params['simpletitle'] ));            
+CMI', array('@title' => $params['title'], '@url' => $params['url'], '@user' => $params['user'], '@simpletitle' => $params['simpletitle'], '@hprmref' => $params['hprmref']));            
             break;
     }
 }
