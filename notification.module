@@ -227,7 +227,7 @@ Please save this email to trim', array('@title' => $params['title'], '@url' => $
 
 The XML metadata file for ecat is located here: http://cmi.ga.gov.au/ecat@url
 
-The Project management plan is located at HPRM reference @hprmref
+The Project management plan is located at HPRM reference 2015/1367.
 
 Regards,
 CMI', array('@title' => $params['title'], '@url' => $params['url'], '@user' => $params['user'], '@simpletitle' => $params['simpletitle'], '@hprmref' => $params['hprmref']));            
