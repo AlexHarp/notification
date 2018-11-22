@@ -14,6 +14,8 @@ function notification_node_update(EntityInterface $entity){
    $result = null;
    $sent = false;
    $cmiEmail = 'cmi@ga.gov.au';
+   $user =  "";
+   $pw = "";
 
    switch($entity->get('moderation_state')->getString()) {
 
@@ -23,7 +25,7 @@ function notification_node_update(EntityInterface $entity){
            $module = "notification";
            $key = 'branch_head_notification';
            $entUser = $entity->get('field_please_select_your_branch_')->getvalue();
-	   $entUser = \Drupal::entityTypeManager()->getStorage('user')->load($entUser[0]['target_id']);
+	       $entUser = \Drupal::entityTypeManager()->getStorage('user')->load($entUser[0]['target_id']);
 //must catch nulls 
            $to = $entUser->getEmail();
            $params['message'] = "params message test";/* $entity->get('body')->value;*/
@@ -99,30 +101,39 @@ function notification_node_update(EntityInterface $entity){
            $langcode = \Drupal::currentUser()->getPreferredLangcode();
            $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
 */
-	   $mailManager = \Drupal::service('plugin.manager.mail');
-           $module = "notification";
-           $key = 'branch_head_receipt';
-	   $to = $cmiEmail;
-           $params['message'] = "params message test";
-           $params['title'] = $entity->gettitle();
-           $params['simpletitle'] = $entity->get('field_simple_title')->getvalue();
-	   $params['simpletitle'] = $params['simpletitle'][0]['value'];
-           $params['user'] = $entity->getRevisionUser()->getEmail();
-           $params['revdate'] = gmdate("Y-m-d H:i:s", $entity->getRevisionCreationTime());
-	   $params['revlog'] = $entity->getRevisionLogMessage();
-           $params['url'] = $entity->toUrl()->toString();
-	   $params['to'] = $cmiEmail;
-           $langcode = \Drupal::currentUser()->getPreferredLangcode();
-	   $send = true;
-           $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
-	   $sent = true;
+        /**
+         * Make sure that the transition was triggered by a branch head and not just an edit by a standard user.
+         * The logic is that heads do not particpiate in normal workflow edits thus this **SHOULD** be a state transition and 
+         * not just an edit which will trigger this rule. 
+         * This solution needs a better fix.
+         * TODO:
+         * **/
+           $params['user'] = $entity->getRevisionUser(); //user that made the edit
+           if($params['user']->hasRole('branch_head') or $params['user']->hasRole('acting_branch_head')){
+               $mailManager = \Drupal::service('plugin.manager.mail');
+                   $module = "notification";
+                   $key = 'branch_head_receipt';
+               $to = $cmiEmail;
+                   $params['message'] = "params message test";
+                   $params['title'] = $entity->gettitle();
+                   $params['simpletitle'] = $entity->get('field_simple_title')->getvalue();
+               $params['simpletitle'] = $params['simpletitle'][0]['value'];
+                   $params['revdate'] = gmdate("Y-m-d H:i:s", $entity->getRevisionCreationTime());
+               $params['revlog'] = $entity->getRevisionLogMessage();
+                   $params['url'] = $entity->toUrl()->toString();
+               $params['to'] = $cmiEmail;
+                   $langcode = \Drupal::currentUser()->getPreferredLangcode();
+               $send = true;
+                   $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
+               $sent = true;
+           }
            break;
 
       case 'awaiting_publication':
            $mailManager = \Drupal::service('plugin.manager.mail');
            $module = "notification";
            $key = 'eCat_notification';
-           $to = 'alexis.harper@ga.gov.au';
+           $to = $cmiEmail;
            $params['message'] = "params message test";/* $entity->get('body')->value;*/
            $params['title'] = $entity->gettitle();
            $params['user'] = $entity->getRevisionUser()->getEmail();
@@ -131,11 +142,26 @@ function notification_node_update(EntityInterface $entity){
 	   $params['simpletitle'] = $params['simpletitle'][0]['value'];
 	   $params['hprmref'] = $entity->get('field_hprm_references')->getvalue();
            $langcode = \Drupal::currentUser()->getPreferredLangcode();
-           $to = $cmiEmail;
+	   $send = true;
+           $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
+	   $sent = true;
+
+           //email pmp to trim folder
+           $key = 'pmp';
+	       $to = $cmiEmail;
+           $params['message'] = "params message test";
+           $params['title'] = $entity->gettitle();
+           $url = "http://".$user.":".$pw."@"./*$_SERVER['HTTP_HOST']*/"cmi.ga.gov.au"."/pmp/"/*/print/view/pdf/project_management_plan/page_1/debug?view_args%5B0%5D="*/.substr($entity->url(), 1); //removes leading /
+                drupal_set_message($url);
+                drupal_set_message(file_get_contents($url));
+           $params['pmpContent'] = "pmp: \n".file_get_contents($url)."\nbase:\n".file_get_contents('http://52.64.197.68/')."\ncmi base:\n".file_get_contents('http://cmi.ga.gov.au/')."\ngoogle:\n".file_get_contents('https://www.google.com/');
+	       $params['to'] = $cmiEmail;
+           $langcode = \Drupal::currentUser()->getPreferredLangcode();
 	   $send = true;
            $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
 	   $sent = true;
            break;
+
    }
       if($sent){
 	    if ($result['result'] !== true) {
@@ -184,11 +210,14 @@ The product @title (@simpletitle) is ready for Project Lead approval, requested 
 
 http://cmi.ga.gov.au@url
 
+You are required to submit a formal review of the product before approving it. To create a review you can click here: http://cmi.ga.gov.au/node/add/approver_review or use the navigational links from the top bar on the CMI website. Please be sure to click the published box once your review is final. 
+
 Once you have reviewed the content, and if you approve, please follow these steps:
-    1. Scroll to the bottom of the page
-    2. Include any relevant approval comments in the ‘Log Message’ box.
-    3. Change the ‘moderation state’ to ‘Request Branch Head Approval’ (drop down list).
-    4. Click Apply.
+    1. Go to the products page (http://cmi.ga.gov.au@url) 
+    2. Scroll to the bottom of the page
+    3. Include any relevant approval comments in the ‘Log Message’ box.
+    4. Change the ‘moderation state’ to ‘Request Branch Head Approval’ (drop down list).
+    5. Click Apply.
 
 Regards,
 CMI', array('@title' => $params['title'], '@url' => $params['url'], '@user' => $params['user'], '@to' => $params['to'], '@simpletitle' => $params['simpletitle']));            
@@ -206,7 +235,7 @@ The Project Lead has left the following comments :
 The product meta data can be found here: http://cmi.ga.gov.au@url', array('@title' => $params['title'], '@url' => $params['url'], '@user' => $params['user'], '@revdate' => $params['revdate'], '@revlog' => $params['revlog'], '@branchhead' => $params['branchhead'], '@simpletitle' => $params['simpletitle'])); 
 	    break;
 
-      case 'branch_head_receipt':
+      case 'branch_head_receiptiiiiii':
             $message['from'] = \Drupal::config('system.site')->get('mail');
             $message['subject'] = t('Receipt - @title - Branch Head approval @revdate', array('@title' => $params['title'], '@revdate' => $params['revdate']));
             $message['body'][] = t('The product @title (@simpletitle) has been approved by the Branch Head @user at @revdate and has been sent to the CMI team.
@@ -231,6 +260,11 @@ The Project management plan is located at HPRM reference 2015/1367.
 
 Regards,
 CMI', array('@title' => $params['title'], '@url' => $params['url'], '@user' => $params['user'], '@simpletitle' => $params['simpletitle'], '@hprmref' => $params['hprmref']));            
+    
+      case 'pmp':
+            $message['from'] = \Drupal::config('system.site')->get('mail');
+            $message['subject'] = t('Product Management Plan: @title', array('@title' => $params['title']));
+            $message['body'][] = t('@pmp', array('@pmp'=> $params['pmpContent']));
             break;
     }
 }
