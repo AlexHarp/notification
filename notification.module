@@ -235,7 +235,7 @@ The Project Lead has left the following comments :
 The product meta data can be found here: http://cmi.ga.gov.au@url', array('@title' => $params['title'], '@url' => $params['url'], '@user' => $params['user'], '@revdate' => $params['revdate'], '@revlog' => $params['revlog'], '@branchhead' => $params['branchhead'], '@simpletitle' => $params['simpletitle'])); 
 	    break;
 
-      case 'branch_head_receiptiiiiii':
+      case 'branch_head_receipt':
             $message['from'] = \Drupal::config('system.site')->get('mail');
             $message['subject'] = t('Receipt - @title - Branch Head approval @revdate', array('@title' => $params['title'], '@revdate' => $params['revdate']));
             $message['body'][] = t('The product @title (@simpletitle) has been approved by the Branch Head @user at @revdate and has been sent to the CMI team.
